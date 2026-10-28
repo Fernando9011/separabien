@@ -1,0 +1,9 @@
+# dependencias y salidas
+node_modules/
+*.log
+# resultados generados por las pruebas
+app/tests/resultados.json
+app/tests/resultados.txt
+# archivos del sistema
+.DS_Store
+Thumbs.db
