@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SeparaBien – Proyecto aplicado UNAD</title>
+<style>
+:root{
+  --bg:#f1f4f1; --surf:#ffffff; --txt:#17302b; --mut:#53675f; --line:#c9d3cd;
+  --hero:#17302b; --verde:#2f8f5b; --negra:#25282b; --amb:#b97a14; --foco:#0b5fff;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#0f1b19; --surf:#172725; --txt:#e6efec; --mut:#9db3ac; --line:#2b4540; --foco:#7aa7ff; }
+}
+:root[data-theme="dark"]{ --bg:#0f1b19; --surf:#172725; --txt:#e6efec; --mut:#9db3ac; --line:#2b4540; --foco:#7aa7ff; }
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font:17px/1.55 "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.15;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--foco);outline-offset:3px}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px}
+section{padding:48px 0}
+h2{font-size:clamp(26px,5vw,34px);margin-bottom:8px}
+.sub{color:var(--mut);margin:0 0 24px;max-width:62ch}
+/* hero */
+.hero{background:var(--hero);color:#fff;padding:56px 0 0}
+.hero .tag{font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:#bcd0c8;margin:0 0 14px}
+.hero h1{font-size:clamp(40px,9vw,72px);margin-bottom:14px}
+.hero p.lead{font-size:clamp(18px,3vw,22px);max-width:36ch;color:#e4eeea;margin:0 0 28px}
+.hero .btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px}
+.btn{display:inline-block;padding:13px 20px;border-radius:8px;font-weight:700;text-decoration:none;border:2px solid #fff;color:#fff}
+.btn.fill{background:#fff;color:#17302b}
+.bins{display:grid;grid-template-columns:1fr 1fr 1fr;height:14px}
+.bins i{display:block}.bins i:nth-child(1){background:#fff}.bins i:nth-child(2){background:var(--verde)}.bins i:nth-child(3){background:var(--negra)}
+/* tarjetas */
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:10px;padding:18px}
+.card h3{font-size:20px;margin-bottom:6px}
+.card p{margin:0;color:var(--mut)}
+.num{font:700 40px/1 Georgia,serif;display:block}
+.pill{display:inline-block;font-size:13px;font-weight:700;padding:2px 10px;border-radius:99px;margin-bottom:10px;color:#fff}
+.p-b{background:#fff;color:#17302b;border:1px solid #17302b}.p-v{background:var(--verde)}.p-n{background:var(--negra)}.p-a{background:var(--amb)}
+.alt{background:var(--surf);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.alt .card{background:var(--bg)}
+/* demo */
+.demo{background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:20px;max-width:620px}
+.demo input{width:100%;font:inherit;padding:14px;border:2px solid var(--txt);border-radius:8px;background:var(--bg);color:var(--txt)}
+.res{display:grid;grid-template-columns:104px 1fr;margin-top:10px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.res .c{display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-weight:700;font-size:14px;color:#fff}
+.res .c.blanca{background:#fff;color:#17302b;border-right:1px solid var(--line)}
+.res .c.negra{background:var(--negra)}.res .c.verde{background:var(--verde)}.res .c.especial{background:var(--amb)}
+.res .t{padding:10px 12px}.res .t b{display:block}.res .t span{color:var(--mut);font-size:15px}
+.hint{color:var(--mut);margin:12px 0 0;min-height:1.5em}
+ul.ok{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+ul.ok li{padding-left:26px;position:relative}
+ul.ok li::before{content:"✓";position:absolute;left:0;color:var(--verde);font-weight:700}
+.todo li::before{content:"○";color:var(--amb)}
+.refs{font-size:15px;color:var(--mut)}
+footer{background:var(--hero);color:#cfe0d9;padding:32px 0;font-size:15px}
+footer b{color:#fff}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* app completa */
+.app{background:var(--surf);border:1px solid var(--line);border-radius:12px;max-width:640px;overflow:hidden}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}
+.tabs button{border:0;background:none;color:var(--mut);font:600 15px "Segoe UI",Roboto,Arial,sans-serif;padding:14px 4px;border-bottom:4px solid transparent;cursor:pointer}
+.tabs button[aria-selected=true]{color:var(--txt);border-bottom-color:var(--verde)}
+.pane{padding:18px}.pane[hidden]{display:none}
+.pane h3{font-size:21px;margin-bottom:10px}
+.row{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center;margin-bottom:10px}
+.row label{font-weight:600}
+.pane select{width:100%;font:inherit;padding:12px;border:2px solid var(--txt);border-radius:8px;background:var(--bg);color:var(--txt)}
+.b2{font:inherit;font-weight:700;background:var(--txt);color:var(--bg);border:0;border-radius:8px;padding:12px 16px;cursor:pointer;margin:8px 8px 0 0}
+.b2.sec{background:transparent;color:var(--txt);border:2px solid var(--txt)}
+.aviso{border-left:6px solid var(--verde);background:var(--bg);padding:10px 14px;border-radius:0 8px 8px 0;margin-top:14px}
+.aviso b{display:block}
+.q .item{font:700 24px/1.2 Georgia,serif;margin:6px 0 14px}
+.opts{display:grid;gap:8px}
+.opt{font:inherit;font-weight:700;text-align:left;padding:14px;border-radius:8px;border:2px solid #17302b;cursor:pointer;background:#fff;color:#17302b}
+.opt.o-verde{background:var(--verde);color:#fff;border-color:var(--verde)}
+.opt.o-negra{background:var(--negra);color:#fff;border-color:var(--negra)}
+.opt.o-especial{background:var(--amb);color:#fff;border-color:var(--amb)}
+.opt[disabled]{opacity:.55;cursor:default}
+.opt.ok{opacity:1;outline:4px solid var(--foco)}
+.fb{margin-top:12px;padding:12px;border-radius:8px;font-weight:600;background:var(--bg);border:1px solid var(--line)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;text-align:center}
+.stat b{display:block;font:700 28px/1.1 Georgia,serif}
+.ins{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:var(--bg)}
+.ins.lock{opacity:.55}
+.sello{width:42px;height:42px;border-radius:50%;background:var(--verde);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.ins.lock .sello{background:#8da39b}
+.ins span{display:block;font-size:14px;color:var(--mut)}
+.leg{display:grid;gap:8px;margin-top:16px}
+.leg div{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:8px;font-weight:700}
+.leg small{font-weight:400;text-align:right}
+.leg .l-b{background:#fff;color:#17302b;border:2px solid #17302b}.leg .l-v{background:var(--verde);color:#fff}.leg .l-n{background:var(--negra);color:#fff}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="tag">Proyecto aplicado · Trabajo de Grado · UNAD</p>
+    <h1>SeparaBien</h1>
+    <p class="lead">Una app ligera para que los vecinos de la Ciudadela San Eduardo sepan en qué caneca va cada residuo.</p>
+    <div class="btns">
+      <a class="btn fill" href="#prueba">Pruébalo aquí</a>
+      <a class="btn" href="#problema">Conoce el proyecto</a>
+      <a class="btn" href="app/">Abrir la app instalable</a>
+    </div>
+  </div>
+  <div class="bins" aria-hidden="true"><i></i><i></i><i></i></div>
+</header>
+
+<main>
+<section id="problema">
+  <div class="wrap">
+    <h2>El problema</h2>
+    <p class="sub">En la Ciudadela San Eduardo, Etapa II (Popayán), la separación de residuos en la fuente falla en la práctica diaria, aunque existe el PGIRS de Popayán 2016-2027.</p>
+    <div class="grid">
+      <div class="card"><h3>Síntomas</h3><p>Basura acumulada fuera de horario, residuos aprovechables mezclados con los que no lo son y malos olores en las zonas de acopio.</p></div>
+      <div class="card"><h3>Causas</h3><p>Desconocimiento de los horarios de la ruta, poca educación ambiental práctica y ninguna herramienta digital local que guíe la separación.</p></div>
+      <div class="card"><h3>Si no se interviene</h3><p>Más contaminación, más quejas vecinales y un trabajo más difícil para los recicladores de oficio.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="solucion">
+  <div class="wrap">
+    <h2>La solución</h2>
+    <p class="sub">Una aplicación web progresiva (PWA): se abre desde el navegador, se puede instalar en el celular y sigue funcionando sin internet.</p>
+    <div class="grid">
+      <div class="card"><span class="pill p-v">Inicio</span><h3>¿En qué caneca va?</h3><p>Escribe un residuo y la app responde con la caneca y cómo prepararlo.</p></div>
+      <div class="card"><span class="pill p-b">Calendario</span><h3>Días de recolección</h3><p>Cada vecino marca los días de su sector, ve cuál es la próxima recolección y puede activar un recordatorio la víspera.</p></div>
+      <div class="card"><span class="pill p-n">Quiz</span><h3>Aprende jugando</h3><p>Rondas de 5 preguntas con retroalimentación inmediata y 10 puntos por acierto.</p></div>
+      <div class="card"><span class="pill p-a">Logros</span><h3>Puntos, racha e insignias</h3><p>Cuatro insignias y una racha de días seguidos que premian la constancia.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="prueba">
+  <div class="wrap">
+    <h2>Usa SeparaBien</h2>
+    <p class="sub">La app completa funcionando en esta página: busca un residuo, configura tu recolección, juega y gana insignias. Tu progreso se guarda en este navegador.</p>
+    <div class="app">
+      <div class="tabs" role="tablist" aria-label="Secciones de la app">
+        <button role="tab" data-t="buscar" aria-selected="true">Buscar</button>
+        <button role="tab" data-t="cal" aria-selected="false">Calendario</button>
+        <button role="tab" data-t="juego" aria-selected="false">Juego</button>
+        <button role="tab" data-t="logros" aria-selected="false">Logros</button>
+      </div>
+      <div class="pane" id="p-buscar">
+        <h3>¿En qué caneca va?</h3>
+        <label for="q" style="position:absolute;left:-9999px">Residuo</label>
+        <input id="q" type="search" placeholder="Escribe: botella, cáscara, pila…" autocomplete="off" style="width:100%;font:inherit;padding:14px;border:2px solid var(--txt);border-radius:8px;background:var(--bg);color:var(--txt)">
+        <div id="res" aria-live="polite"><p class="hint">Escribe el nombre de un residuo y te decimos dónde va.</p></div>
+        <div class="leg">
+          <div class="l-b">Blanca <small>Plástico, vidrio, metal, papel y cartón limpios</small></div>
+          <div class="l-v">Verde <small>Restos de comida y de jardín</small></div>
+          <div class="l-n">Negra <small>Papel sucio, higiénicos y lo que no se recicla</small></div>
+        </div>
+      </div>
+      <div class="pane" id="p-cal" hidden>
+        <h3>Días de recolección</h3>
+        <p class="hint" style="margin-top:0">Marca qué se recoge cada día en tu sector. Consulta el calendario oficial de Urbaser Popayán.</p>
+        <div id="dias"></div>
+        <div class="aviso" id="av"></div>
+        <button class="b2 sec" id="bn">Activar recordatorio</button>
+        <p class="hint" id="mn" aria-live="polite"></p>
+      </div>
+      <div class="pane" id="p-juego" hidden>
+        <h3>Juego: ¿a qué caneca va?</h3>
+        <div id="jg"></div>
+      </div>
+      <div class="pane" id="p-logros" hidden>
+        <h3>Tus logros</h3>
+        <div class="stats" id="st"></div>
+        <div id="ins"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="metodo">
+  <div class="wrap">
+    <h2>Cómo se construyó</h2>
+    <p class="sub">El proyecto combina tres enfoques dentro de un trabajo ágil, en ciclos semanales.</p>
+    <div class="grid">
+      <div class="card"><h3>Design Thinking</h3><p>Se parte de la empatía con los vecinos y de definir bien el problema antes de proponer soluciones (Clarke, 2020).</p></div>
+      <div class="card"><h3>Lean Startup</h3><p>Un producto mínimo viable para aprender rápido y decidir si perseverar o pivotar (Llamas Fernández, 2018).</p></div>
+      <div class="card"><h3>Gamificación</h3><p>Puntos, insignias y rachas para motivar y retener al usuario (Villegas et al., 2018).</p></div>
+    </div>
+    <p class="refs" style="margin-top:18px">Las canecas siguen el código de colores de Colombia: blanca para aprovechables, negra para no aprovechables y verde para orgánicos.</p>
+  </div>
+</section>
+
+<section id="pruebas">
+  <div class="wrap">
+    <h2>Pruebas realizadas</h2>
+    <p class="sub">Todas las pruebas automáticas aprobadas. En la primera ejecución una validación falló (una etiqueta salía en minúscula); se corrigió y se repitieron todas.</p>
+    <div class="grid">
+      <div class="card"><span class="num">19</span><p>pruebas de unidad</p></div>
+      <div class="card"><span class="num">4</span><p>pruebas de integración</p></div>
+      <div class="card"><span class="num">20</span><p>validaciones en navegador, incluido el uso sin conexión y pantallas de 320 px</p></div>
+      <div class="card"><span class="num">29 KB</span><p>peso total de la app, sin librerías externas</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="siguiente">
+  <div class="wrap">
+    <h2>Qué sigue</h2>
+    <ul class="ok todo">
+      <li>Prueba de usabilidad con 5 a 10 vecinos voluntarios.</li>
+      <li>Probar el recordatorio de recolección en un celular real.</li>
+      <li>Publicar la app en GitHub Pages.</li>
+      <li>Decidir si perseverar o pivotar con los resultados.</li>
+      <li>Fase futura: base de datos en la nube (Firebase o Supabase).</li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>SeparaBien</b> · Fase 3 – Implementación del proyecto</p>
+    <p>Daniliz Fernando Gómez Pinto · Curso 202047922A_2204 – Trabajo de Grado<br>
+    Tecnología en Desarrollo de Software · Universidad Nacional Abierta y a Distancia (UNAD) · Popayán, octubre de 2026</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var ITEMS=[
+    ["Botella plástica (PET)","blanca","Vacíala, aplástala y ciérrala con su tapa.","botella gaseosa agua pet plastico"],
+    ["Envase de detergente o champú","blanca","Enjuágalo antes de botarlo.","shampoo champu detergente envase frasco"],
+    ["Bolsa plástica limpia","blanca","Debe estar limpia y seca.","bolsa plastico"],
+    ["Tapas plásticas","blanca","Pueden ir sueltas o puestas en la botella.","tapa tapas plastico"],
+    ["Caja de cartón","blanca","Desármala y mantenla seca.","carton caja"],
+    ["Periódico y revistas","blanca","Mantenlos secos y sin grasa.","periodico revista papel"],
+    ["Cuadernos y papel de oficina","blanca","Sin restos de comida ni grasa.","cuaderno hoja papel impresion"],
+    ["Lata de gaseosa o atún","blanca","Enjuágala; no hace falta quitar la etiqueta.","lata aluminio atun metal"],
+    ["Frasco de vidrio","blanca","Si está roto, envuélvelo en papel y márcalo.","vidrio frasco botella"],
+    ["Caja de leche o jugo (Tetra Pak)","blanca","Aplástala, enjuágala y sécala.","tetrapak tetra leche jugo"],
+    ["Cáscaras de fruta y verdura","verde","Sin bolsas plásticas ni empaques.","cascara cascaras fruta verdura platano naranja"],
+    ["Restos de comida","verde","Escúrrelos para evitar malos olores.","comida sobras arroz restos"],
+    ["Borra de café y bolsas de té","verde","Retira las grapas de las bolsas de té.","cafe te borra infusion"],
+    ["Cáscaras de huevo","verde","Pueden ir trituradas o enteras.","huevo cascara"],
+    ["Hojas y restos de poda","verde","Sin plástico ni piedras.","hojas poda jardin pasto ramas"],
+    ["Papel higiénico usado","negra","Envuélvelo bien antes de botarlo.","higienico bano papel"],
+    ["Servilletas y pañuelos usados","negra","El papel con grasa o comida no se recicla.","servilleta panuelo grasa"],
+    ["Pañales y toallas higiénicas","negra","Ciérralos en una bolsa aparte.","panal panales toalla higienica"],
+    ["Colillas de cigarrillo","negra","Apágalas por completo antes de botarlas.","colilla cigarrillo"],
+    ["Empaque metalizado de papas o dulces","negra","Los empaques metalizados no se reciclan.","empaque papas dulce snack galleta"],
+    ["Barrido y polvo","negra","Embólsalo antes de sacarlo.","barrido polvo"],
+    ["Cerámica y espejos rotos","negra","Envuélvelos en papel para proteger a quien recoge.","ceramica espejo plato"],
+    ["Pilas y baterías","especial","Llévalas a un punto de recolección posconsumo.","pila pilas bateria"],
+    ["Bombillos y tubos fluorescentes","especial","Contienen sustancias peligrosas; no los rompas.","bombillo bombilla fluorescente led"],
+    ["Equipos electrónicos (RAEE)","especial","Entrégalos en campañas o puntos de acopio de electrónicos.","celular computador cargador cable electronico raee teclado"],
+    ["Medicamentos vencidos","especial","Llévalos a un punto azul o a una farmacia con recolección.","medicamento pastilla jarabe vencido droga"],
+    ["Aceite de cocina usado","especial","Guárdalo en una botella cerrada; no lo botes al desagüe.","aceite fritura"]
+  ];
+  var BINS={blanca:["Caneca blanca","Aprovechables"],verde:["Caneca verde","Orgánicos"],negra:["Caneca negra","No aprovechables"],especial:["Punto especial","No va a las canecas"]};
+  var CHIP={blanca:"Blanca",verde:"Verde",negra:"Negra",especial:"Punto especial"};
+  var INS={primer_acierto:["Primer acierto","Responde bien tu primera pregunta."],vecino_reciclador:["Vecino Reciclador","Suma 50 puntos."],experto_organicos:["Experto en Orgánicos","Acierta 5 veces con residuos orgánicos."],racha_3:["Racha de 3 días","Juega 3 días seguidos."]};
+  var DIAS=["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+  var TIPOS={ninguna:"Sin recolección",blanca:"Aprovechables",negra:"No aprovechables",verde:"Orgánicos"};
+  var KEY="separabien:estado";
+
+  function $(s){return document.querySelector(s);}
+  function el(t,c,x){var n=document.createElement(t);if(c)n.className=c;if(x!=null)n.textContent=x;return n;}
+  function norm(s){return String(s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();}
+  function hoy(){var d=new Date(),p=function(n){return String(n).padStart(2,"0");};return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());}
+  function aF(s){var a=s.split("-").map(Number);return Date.UTC(a[0],a[1]-1,a[2]);}
+
+  function init(){return {puntos:0,aciertos:0,intentos:0,verde:0,racha:0,ultimo:null,ins:[],cal:{0:"ninguna",1:"ninguna",2:"ninguna",3:"ninguna",4:"ninguna",5:"ninguna",6:"ninguna"}};}
+  function cargar(){try{var r=localStorage.getItem(KEY);return r?Object.assign(init(),JSON.parse(r)):init();}catch(e){return init();}}
+  var E=cargar();
+  function guardar(){try{localStorage.setItem(KEY,JSON.stringify(E));}catch(e){}}
+
+  /* pestañas */
+  function ir(t){
+    document.querySelectorAll(".pane").forEach(function(p){p.hidden=p.id!=="p-"+t;});
+    document.querySelectorAll(".tabs button").forEach(function(b){b.setAttribute("aria-selected",String(b.dataset.t===t));});
+    if(t==="logros")logros(); if(t==="cal")aviso();
+  }
+  document.querySelectorAll(".tabs button").forEach(function(b){b.addEventListener("click",function(){ir(b.dataset.t);});});
+
+  /* RF-01 buscador */
+  var res=$("#res");
+  $("#q").addEventListener("input",function(e){
+    res.replaceChildren();
+    var t=norm(e.target.value);
+    if(t.length<2){res.appendChild(el("p","hint","Escribe el nombre de un residuo y te decimos dónde va."));return;}
+    var r=ITEMS.filter(function(i){return norm(i[0]).indexOf(t)>-1||i[3].indexOf(t)>-1;});
+    r.sort(function(a,b){return Number(norm(b[0]).indexOf(t)===0)-Number(norm(a[0]).indexOf(t)===0);});
+    if(!r.length){res.appendChild(el("p","hint","No encontramos ese residuo. Prueba con «botella» o «cáscara»."));return;}
+    r.slice(0,6).forEach(function(i){
+      var f=el("div","res"),d=el("div","t");
+      f.appendChild(el("div","c "+i[1],CHIP[i[1]]));
+      d.appendChild(el("b","",i[0]));d.appendChild(el("span","",i[2]));f.appendChild(d);res.appendChild(f);
+    });
+  });
+
+  /* RF-02 calendario + RF-07 recordatorio */
+  function prox(){
+    var n=new Date();
+    for(var o=0;o<=7;o++){var d=new Date(n.getFullYear(),n.getMonth(),n.getDate()+o),t=E.cal[d.getDay()];
+      if(t&&t!=="ninguna")return {en:o,dia:DIAS[d.getDay()],tipo:t};}
+    return null;
+  }
+  function aviso(){
+    var c=$("#av");c.replaceChildren();var p=prox();
+    if(!p){c.appendChild(el("b","","Aún no configuras tus días de recolección."));c.appendChild(el("span","","Elige un tipo de recolección para cada día."));return;}
+    c.appendChild(el("b","","Próxima recolección: "+(p.en===0?"Hoy":p.en===1?"Mañana":p.dia)));
+    c.appendChild(el("span","",TIPOS[p.tipo]));
+  }
+  var dd=$("#dias");
+  [1,2,3,4,5,6,0].forEach(function(d){
+    var r=el("div","row"),l=el("label","",DIAS[d]),s=document.createElement("select");
+    l.setAttribute("for","d"+d);s.id="d"+d;
+    Object.keys(TIPOS).forEach(function(k){var o=el("option","",TIPOS[k]);o.value=k;s.appendChild(o);});
+    s.value=E.cal[d];
+    s.addEventListener("change",function(){E.cal[d]=s.value;guardar();aviso();});
+    r.appendChild(l);r.appendChild(s);dd.appendChild(r);
+  });
+  function vispera(){
+    try{if(!("Notification" in window)||Notification.permission!=="granted")return;
+      var p=prox();if(p&&p.en===1)new Notification("SeparaBien",{body:"Mañana recogen: "+TIPOS[p.tipo]+". Saca tus residuos a tiempo."});}catch(e){}
+  }
+  $("#bn").addEventListener("click",function(){
+    var m=$("#mn");
+    try{
+      if(!("Notification" in window)){m.textContent="Este navegador no permite recordatorios.";return;}
+      Promise.resolve(Notification.requestPermission()).then(function(r){
+        m.textContent=r==="granted"?"Listo: te avisaremos al abrir la página la víspera de la recolección.":"No se activó el recordatorio. Puedes permitirlo en los ajustes del navegador.";
+        if(r==="granted")vispera();
+      }).catch(function(){m.textContent="No se pudo activar el recordatorio aquí.";});
+    }catch(e){m.textContent="No se pudo activar el recordatorio aquí.";}
+  });
+
+  /* RF-03/04/05/06 juego, puntos, racha e insignias */
+  var TOTAL=5,ronda=null,jg=$("#jg");
+  function racha(h){
+    if(E.ultimo===h)return;
+    var ayer=E.ultimo&&(aF(h)-aF(E.ultimo))===86400000;
+    E.racha=ayer?E.racha+1:1;E.ultimo=h;
+  }
+  function evaluar(){
+    var g=[];
+    if(E.aciertos>=1)g.push("primer_acierto");
+    if(E.puntos>=50)g.push("vecino_reciclador");
+    if(E.verde>=5)g.push("experto_organicos");
+    if(E.racha>=3)g.push("racha_3");
+    var nuevas=g.filter(function(k){return E.ins.indexOf(k)<0;});
+    E.ins=E.ins.concat(nuevas);return nuevas;
+  }
+  function inicioJuego(){
+    jg.replaceChildren();
+    jg.appendChild(el("p","","Responde "+TOTAL+" preguntas. Cada acierto suma 10 puntos."));
+    var b=el("button","b2","Empezar a jugar");b.addEventListener("click",nueva);jg.appendChild(b);
+  }
+  function nueva(){
+    var a=ITEMS.slice();
+    for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}
+    ronda={p:a.slice(0,TOTAL),i:0,ok:0};pregunta();
+  }
+  function pregunta(){
+    jg.replaceChildren();
+    var p=ronda.p[ronda.i],caja=el("div","q");
+    caja.appendChild(el("div","hint","Pregunta "+(ronda.i+1)+" de "+TOTAL));
+    caja.appendChild(el("div","item",p[0]));
+    var ops=el("div","opts");
+    ["blanca","verde","negra","especial"].forEach(function(k){
+      var b=el("button","opt o-"+k,k==="especial"?"Punto especial":BINS[k][0]+" · "+BINS[k][1]);
+      b.dataset.k=k;b.addEventListener("click",function(){contestar(k,ops,caja,p);});ops.appendChild(b);
+    });
+    caja.appendChild(ops);jg.appendChild(caja);
+  }
+  function contestar(k,ops,caja,p){
+    racha(hoy());
+    var ok=k===p[1];E.intentos++;
+    if(ok){E.aciertos++;E.puntos+=10;ronda.ok++;if(p[1]==="verde")E.verde++;}
+    var nuevas=evaluar();guardar();
+    ops.querySelectorAll("button").forEach(function(b){b.disabled=true;if(b.dataset.k===p[1])b.classList.add("ok");});
+    var msg=(ok?"¡Bien! +10 puntos. ":"Casi. ")+p[2];
+    if(nuevas.length)msg+=" Nueva insignia: "+nuevas.map(function(n){return INS[n][0];}).join(", ")+".";
+    caja.appendChild(el("div","fb",msg));
+    var s=el("button","b2",ronda.i+1<TOTAL?"Siguiente":"Ver resultado");
+    s.addEventListener("click",function(){ronda.i++;ronda.i<TOTAL?pregunta():fin();});
+    caja.appendChild(s);s.focus();
+  }
+  function fin(){
+    jg.replaceChildren();
+    var c=el("div","q");
+    c.appendChild(el("div","item",ronda.ok+" de "+TOTAL+" correctas"));
+    c.appendChild(el("p","",ronda.ok===TOTAL?"Separas como un experto.":"Sigue practicando: cada ronda trae residuos distintos."));
+    var o=el("button","b2","Jugar otra ronda");o.addEventListener("click",nueva);
+    var v=el("button","b2 sec","Ver mis logros");v.addEventListener("click",function(){ir("logros");});
+    c.appendChild(o);c.appendChild(v);jg.appendChild(c);
+  }
+  function logros(){
+    var st=$("#st");st.replaceChildren();
+    [["Puntos",E.puntos],["Aciertos",E.aciertos+"/"+E.intentos],["Racha",E.racha+(E.racha===1?" día":" días")]].forEach(function(x){
+      var n=el("div","stat");n.appendChild(el("b","",String(x[1])));n.appendChild(document.createTextNode(x[0]));st.appendChild(n);
+    });
+    var l=$("#ins");l.replaceChildren();
+    Object.keys(INS).forEach(function(k){
+      var g=E.ins.indexOf(k)>-1,f=el("div","ins"+(g?"":" lock"));
+      f.appendChild(el("div","sello",g?"✓":"·"));
+      var t=el("div");t.appendChild(el("b","",INS[k][0]));t.appendChild(el("span","",INS[k][1]));f.appendChild(t);l.appendChild(f);
+    });
+  }
+  inicioJuego();aviso();vispera();
+})();
+</script>
+</body>
+</html>
