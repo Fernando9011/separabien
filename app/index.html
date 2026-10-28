@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17302b">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<title>SeparaBien</title>
+<style>
+:root{
+  --tinta:#17302b; --papel:#f1f4f1; --linea:#c9d3cd; --suave:#5b6f68;
+  --blanca:#ffffff; --negra:#25282b; --verde:#2f8f5b; --especial:#b97a14;
+  --foco:#0b5fff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--papel);color:var(--tinta);font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:17px;line-height:1.45}
+header{padding:calc(14px + env(safe-area-inset-top,0px)) 18px 12px;background:var(--tinta);color:#fff}
+header h1{margin:0;font:700 26px/1.1 Georgia,"Times New Roman",serif;letter-spacing:.2px}
+header p{margin:2px 0 0;font-size:14px;color:#bcd0c8}
+main{padding:16px 16px calc(92px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto}
+h2{font:700 22px/1.2 Georgia,serif;margin:4px 0 12px}
+h3{font-size:17px;margin:18px 0 8px}
+.vista{display:none}.vista.activa{display:block}
+nav{position:fixed;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,1fr);background:#fff;border-top:1px solid var(--linea);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{border:0;background:none;padding:14px 4px;font:600 15px inherit;font-family:inherit;color:var(--suave);border-top:4px solid transparent;cursor:pointer}
+nav button[aria-selected=true]{color:var(--tinta);border-top-color:var(--verde)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--foco);outline-offset:2px}
+input[type=search],select{width:100%;font:inherit;padding:14px;border:2px solid var(--tinta);border-radius:8px;background:#fff;color:var(--tinta)}
+.resultado{display:grid;grid-template-columns:92px 1fr;margin-top:10px;border:1px solid var(--linea);border-radius:8px;overflow:hidden;background:#fff}
+.chip{display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-weight:700;font-size:14px}
+.chip.blanca{background:#fff;color:var(--tinta);border-right:1px solid var(--linea)}
+.chip.negra{background:var(--negra);color:#fff}
+.chip.verde{background:var(--verde);color:#fff}
+.chip.especial{background:var(--especial);color:#fff}
+.resultado .txt{padding:10px 12px}
+.resultado .txt b{display:block}
+.resultado .txt span{color:var(--suave);font-size:15px}
+.vacio{color:var(--suave);padding:10px 0}
+.canecas{display:grid;gap:8px;margin-top:6px}
+.caneca{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 14px;border-radius:8px;font-weight:700}
+.caneca small{font-weight:400;font-size:14px;text-align:right}
+.caneca.blanca{background:#fff;border:2px solid var(--tinta)}
+.caneca.negra{background:var(--negra);color:#fff}
+.caneca.verde{background:var(--verde);color:#fff}
+.aviso{background:#fff;border-left:6px solid var(--verde);padding:12px 14px;border-radius:0 8px 8px 0;margin:16px 0}
+.aviso b{display:block}
+.aviso button,.btn{font:inherit;font-weight:700;background:var(--tinta);color:#fff;border:0;border-radius:8px;padding:12px 16px;cursor:pointer;margin-top:8px}
+.btn.sec{background:#fff;color:var(--tinta);border:2px solid var(--tinta)}
+.fila{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center;margin-bottom:10px}
+.fila label{font-weight:600}
+.pregunta{background:#fff;border:1px solid var(--linea);border-radius:8px;padding:16px}
+.pregunta .item{font:700 24px/1.2 Georgia,serif;margin:6px 0 14px}
+.opciones{display:grid;gap:8px}
+.opcion{font:inherit;font-weight:700;text-align:left;padding:14px;border-radius:8px;border:2px solid var(--tinta);background:#fff;color:var(--tinta);cursor:pointer}
+.opcion.o-negra{background:var(--negra);color:#fff;border-color:var(--negra)}
+.opcion.o-verde{background:var(--verde);color:#fff;border-color:var(--verde)}
+.opcion.o-especial{background:var(--especial);color:#fff;border-color:var(--especial)}
+.opcion[disabled]{opacity:.55;cursor:default}
+.opcion.correcta{opacity:1;outline:4px solid var(--foco)}
+.fb{margin-top:12px;padding:12px;border-radius:8px;font-weight:600}
+.fb.ok{background:#dff3e7}.fb.mal{background:#fde7e1}
+.progreso{color:var(--suave);font-size:15px}
+.datos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.dato{background:#fff;border:1px solid var(--linea);border-radius:8px;padding:10px;text-align:center}
+.dato b{display:block;font:700 28px/1.1 Georgia,serif}
+.insignias{display:grid;gap:8px}
+.ins{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--linea);border-radius:8px;padding:10px 12px}
+.ins .sello{width:44px;height:44px;border-radius:50%;background:var(--verde);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.ins.bloq{opacity:.55}.ins.bloq .sello{background:#9aa9a3}
+.ins span{display:block;font-size:14px;color:var(--suave)}
+.sr{position:absolute;left:-9999px}
+@media (prefers-reduced-motion:no-preference){.opcion,nav button{transition:background .15s}}
+</style>
+</head>
+<body>
+<header>
+  <h1>SeparaBien</h1>
+  <p>Ciudadela San Eduardo, Popayán</p>
+</header>
+<main>
+  <!-- INICIO -->
+  <section id="v-inicio" class="vista activa" aria-label="Inicio">
+    <h2>¿En qué caneca va?</h2>
+    <label class="sr" for="q">Residuo</label>
+    <input id="q" type="search" placeholder="Escribe: botella, cáscara, pila…" autocomplete="off">
+    <div id="res" aria-live="polite"><p class="vacio">Escribe el nombre de un residuo y te decimos dónde va.</p></div>
+    <div id="aviso-rec" class="aviso"></div>
+    <h3>Las canecas</h3>
+    <div class="canecas">
+      <div class="caneca blanca">Blanca <small>Plástico, vidrio, metal, papel y cartón limpios</small></div>
+      <div class="caneca verde">Verde <small>Restos de comida y de jardín</small></div>
+      <div class="caneca negra">Negra <small>Papel sucio, higiénicos y lo que no se recicla</small></div>
+    </div>
+  </section>
+  <!-- CALENDARIO -->
+  <section id="v-cal" class="vista" aria-label="Calendario">
+    <h2>Días de recolección</h2>
+    <p>Marca qué se recoge cada día en tu sector. Consulta el calendario oficial de Urbaser Popayán.</p>
+    <div id="dias"></div>
+    <button class="btn sec" id="btn-notif">Activar recordatorio</button>
+    <p id="msg-notif" class="progreso" aria-live="polite"></p>
+  </section>
+  <!-- QUIZ -->
+  <section id="v-quiz" class="vista" aria-label="Quiz">
+    <h2>Pon a prueba lo que sabes</h2>
+    <div id="quiz-cont"></div>
+  </section>
+  <!-- LOGROS -->
+  <section id="v-logros" class="vista" aria-label="Logros">
+    <h2>Tus logros</h2>
+    <div class="datos" id="datos"></div>
+    <h3>Insignias</h3>
+    <div class="insignias" id="insignias"></div>
+  </section>
+</main>
+<nav role="tablist" aria-label="Secciones">
+  <button role="tab" data-v="inicio" aria-selected="true">Inicio</button>
+  <button role="tab" data-v="cal" aria-selected="false">Calendario</button>
+  <button role="tab" data-v="quiz" aria-selected="false">Quiz</button>
+  <button role="tab" data-v="logros" aria-selected="false">Logros</button>
+</nav>
+<script src="logic.js"></script>
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const almacen = SB.crearAlmacen(window.localStorage);
+  let estado = almacen.cargar();
+  const guardar = () => almacen.guardar(estado);
+  const el = (tag, cls, txt) => { const n = document.createElement(tag); if (cls) n.className = cls; if (txt != null) n.textContent = txt; return n; };
+
+  // ----- navegación -----
+  function ir(v){
+    document.querySelectorAll('.vista').forEach(s => s.classList.toggle('activa', s.id === 'v-' + v));
+    document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b.dataset.v === v));
+    if (v === 'logros') pintarLogros();
+    if (v === 'inicio') pintarAviso();
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll('nav button').forEach(b => b.addEventListener('click', () => ir(b.dataset.v)));
+
+  // ----- RF-01 buscador -----
+  function chipTexto(c){ if (c === 'especial') return 'Punto especial'; const n = SB.BINS[c].nombre.replace('Caneca ', ''); return n.charAt(0).toUpperCase() + n.slice(1); }
+  $('#q').addEventListener('input', e => {
+    const cont = $('#res'); cont.replaceChildren();
+    const q = e.target.value;
+    if (SB.normalizar(q).length < 2) { cont.appendChild(el('p', 'vacio', 'Escribe el nombre de un residuo y te decimos dónde va.')); return; }
+    const r = SB.buscar(q);
+    if (!r.length) { cont.appendChild(el('p', 'vacio', 'No encontramos ese residuo. Prueba con otra palabra, por ejemplo «botella» o «cáscara».')); return; }
+    r.slice(0, 6).forEach(it => {
+      const fila = el('div', 'resultado');
+      fila.appendChild(el('div', 'chip ' + it.caneca, chipTexto(it.caneca)));
+      const t = el('div', 'txt'); t.appendChild(el('b', '', it.nombre)); t.appendChild(el('span', '', it.nota));
+      fila.appendChild(t); cont.appendChild(fila);
+    });
+  });
+
+  // ----- RF-02 calendario -----
+  function pintarAviso(){
+    const box = $('#aviso-rec'); box.replaceChildren();
+    const p = SB.proximaRecoleccion(estado.calendario, new Date());
+    if (!p) {
+      box.appendChild(el('b', '', 'Aún no configuras tus días de recolección.'));
+      const b = el('button', '', 'Configurar calendario'); b.addEventListener('click', () => ir('cal')); box.appendChild(b);
+      return;
+    }
+    const cuando = p.enDias === 0 ? 'Hoy' : p.enDias === 1 ? 'Mañana' : p.dia;
+    box.appendChild(el('b', '', 'Próxima recolección: ' + cuando));
+    box.appendChild(el('div', '', SB.TIPOS_RECOLECCION[p.tipo]));
+  }
+  function pintarDias(){
+    const cont = $('#dias'); cont.replaceChildren();
+    [1,2,3,4,5,6,0].forEach(d => {
+      const fila = el('div', 'fila');
+      const lab = el('label', '', SB.DIAS[d]); lab.setAttribute('for', 'dia' + d);
+      const sel = el('select'); sel.id = 'dia' + d;
+      Object.keys(SB.TIPOS_RECOLECCION).forEach(k => { const o = el('option', '', SB.TIPOS_RECOLECCION[k]); o.value = k; sel.appendChild(o); });
+      sel.value = estado.calendario[d];
+      sel.addEventListener('change', () => { estado.calendario[d] = sel.value; guardar(); pintarAviso(); });
+      fila.appendChild(lab); fila.appendChild(sel); cont.appendChild(fila);
+    });
+  }
+  $('#btn-notif').addEventListener('click', async () => {
+    const m = $('#msg-notif');
+    if (!('Notification' in window)) { m.textContent = 'Este navegador no permite recordatorios.'; return; }
+    const r = await Notification.requestPermission();
+    m.textContent = r === 'granted' ? 'Listo: te avisaremos al abrir la app la víspera de la recolección.' : 'No se activó el recordatorio. Puedes permitirlo en los ajustes del navegador.';
+    if (r === 'granted') avisarVispera();
+  });
+  function avisarVispera(){
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    const p = SB.proximaRecoleccion(estado.calendario, new Date());
+    if (p && p.enDias === 1) new Notification('SeparaBien', { body: 'Mañana recogen: ' + SB.TIPOS_RECOLECCION[p.tipo] + '. Saca tus residuos a tiempo.' });
+  }
+
+  // ----- RF-03/04 quiz -----
+  const TOTAL = 5; let ronda = null;
+  function pintarQuizInicio(){
+    const c = $('#quiz-cont'); c.replaceChildren();
+    c.appendChild(el('p', '', 'Responde ' + TOTAL + ' preguntas. Cada acierto suma ' + SB.PUNTOS_ACIERTO + ' puntos.'));
+    const b = el('button', 'btn', 'Empezar'); b.addEventListener('click', nuevaRonda); c.appendChild(b);
+  }
+  function nuevaRonda(){ ronda = { preguntas: SB.armarQuiz(TOTAL), i: 0, ok: 0 }; pintarPregunta(); }
+  function pintarPregunta(){
+    const c = $('#quiz-cont'); c.replaceChildren();
+    const p = ronda.preguntas[ronda.i];
+    const caja = el('div', 'pregunta');
+    caja.appendChild(el('div', 'progreso', 'Pregunta ' + (ronda.i + 1) + ' de ' + TOTAL));
+    caja.appendChild(el('div', 'item', p.item.nombre));
+    const ops = el('div', 'opciones');
+    ['blanca','verde','negra','especial'].forEach(k => {
+      const b = el('button', 'opcion o-' + k, k === 'especial' ? 'Punto especial' : SB.BINS[k].nombre + ' · ' + SB.BINS[k].sub);
+      b.dataset.k = k; b.addEventListener('click', () => contestar(k, ops, caja, p)); ops.appendChild(b);
+    });
+    caja.appendChild(ops); c.appendChild(caja);
+  }
+  function contestar(k, ops, caja, p){
+    const r = SB.responder(estado, p, k, SB.hoyTexto());
+    estado = r.estado; guardar();
+    if (r.acierto) ronda.ok++;
+    ops.querySelectorAll('button').forEach(b => { b.disabled = true; if (b.dataset.k === p.correcta) b.classList.add('correcta'); });
+    let msg = (r.acierto ? '¡Bien! +' + SB.PUNTOS_ACIERTO + ' puntos. ' : 'Casi. ') + p.item.nota;
+    if (r.nuevas.length) msg += ' Nueva insignia: ' + r.nuevas.map(n => SB.INSIGNIAS[n].nombre).join(', ') + '.';
+    caja.appendChild(el('div', 'fb ' + (r.acierto ? 'ok' : 'mal'), msg));
+    const sig = el('button', 'btn', ronda.i + 1 < TOTAL ? 'Siguiente' : 'Ver resultado');
+    sig.addEventListener('click', () => { ronda.i++; ronda.i < TOTAL ? pintarPregunta() : pintarFin(); });
+    caja.appendChild(sig); sig.focus();
+  }
+  function pintarFin(){
+    const c = $('#quiz-cont'); c.replaceChildren();
+    const caja = el('div', 'pregunta');
+    caja.appendChild(el('div', 'item', ronda.ok + ' de ' + TOTAL + ' correctas'));
+    caja.appendChild(el('p', '', ronda.ok === TOTAL ? 'Separas como un experto.' : 'Sigue practicando: cada ronda trae residuos distintos.'));
+    const otra = el('button', 'btn', 'Jugar otra ronda'); otra.addEventListener('click', nuevaRonda);
+    const ver = el('button', 'btn sec', 'Ver mis logros'); ver.style.marginLeft = '8px'; ver.addEventListener('click', () => ir('logros'));
+    caja.appendChild(otra); caja.appendChild(ver); c.appendChild(caja);
+  }
+
+  // ----- RF-05/06 logros -----
+  function pintarLogros(){
+    const d = $('#datos'); d.replaceChildren();
+    [['Puntos', estado.puntos], ['Aciertos', estado.aciertos + '/' + estado.intentos], ['Racha', estado.racha + (estado.racha === 1 ? ' día' : ' días')]].forEach(x => {
+      const n = el('div', 'dato'); n.appendChild(el('b', '', String(x[1]))); n.appendChild(document.createTextNode(x[0])); d.appendChild(n);
+    });
+    const l = $('#insignias'); l.replaceChildren();
+    Object.keys(SB.INSIGNIAS).forEach(k => {
+      const ganada = estado.insignias.includes(k);
+      const f = el('div', 'ins' + (ganada ? '' : ' bloq'));
+      f.appendChild(el('div', 'sello', ganada ? '✓' : '·'));
+      const t = el('div'); t.appendChild(el('b', '', SB.INSIGNIAS[k].nombre)); t.appendChild(el('span', '', SB.INSIGNIAS[k].desc)); f.appendChild(t);
+      l.appendChild(f);
+    });
+  }
+
+  pintarDias(); pintarAviso(); pintarQuizInicio(); avisarVispera();
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+</script>
+</body>
+</html>
